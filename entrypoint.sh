@@ -1,18 +1,18 @@
 #!/bin/sh
-# Pearl miner entrypoint (2Miners) — self-healing: restarts miner on exit,
+# Pearl miner entrypoint (f2pool) — self-healing: restarts miner on exit,
 # so the container keeps a continuous foreground process.
 set -u
 
 # Debug override: any arguments replace the miner loop (e.g. SRBMiner-MULTI --help)
 if [ "$#" -gt 0 ]; then exec "$@"; fi
 
-# Required: Pearl payout address (prl1...) — 2Miners pays PRL directly to it
-PRL_ADDRESS="${PRL_ADDRESS:?set PRL_ADDRESS (your prl1... Pearl address)}"
+# Required: f2pool mining username — f2pool pays the address bound to the account
+F2POOL_USER="${F2POOL_USER:?set F2POOL_USER (your f2pool mining username)}"
 # Worker name: prefix + container hostname suffix so every replica is unique
 WORKER="${WORKER_PREFIX:-rental}-$(hostname | tail -c 8)"
-# 2Miners Pearl stratum (plain stratum on port 1818); wallet = ADDRESS.WORKER
-POOLS="${POOLS:-prl.2miners.com:1818}"
-WALLET="${PRL_ADDRESS}.${WORKER}"
+# f2pool Pearl stratum (plain stratum on port 5500); wallet = USERNAME.WORKER
+POOLS="${POOLS:-pearl.f2pool.com:5500}"
+WALLET="${F2POOL_USER}.${WORKER}"
 
 echo "[entrypoint] worker=${WORKER} pools=${POOLS}"
 
